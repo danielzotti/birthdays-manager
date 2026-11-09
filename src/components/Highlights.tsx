@@ -29,10 +29,10 @@ export const Highlights: React.FC<HighlightsProps> = ({
     .sort((a, b) => a.daysUntil - b.daysUntil);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
       
       {/* 1. TODAY'S BIRTHDAYS */}
-      <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/80 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col justify-between">
+      <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/80 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col justify-between lg:col-span-2 xl:col-span-1">
         <div>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
@@ -154,7 +154,7 @@ export const Highlights: React.FC<HighlightsProps> = ({
                     key={contact.id || contact.rowIndex}
                     className="bg-white/95 border border-rose-200/90 rounded-xl p-3 shadow-sm hover:shadow transition"
                   >
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5 truncate">
                           <span className="font-semibold text-slate-900 text-sm truncate">
@@ -164,21 +164,9 @@ export const Highlights: React.FC<HighlightsProps> = ({
                             {dayLabel}
                           </span>
                         </div>
-                        {contact.note && (
-                          <p className="text-xs text-slate-500 truncate mt-0.5 italic">
-                            💡 {contact.note.slice(0, 45)}...
-                          </p>
-                        )}
                       </div>
 
                       <div className="flex items-center gap-1.5 shrink-0">
-                        <button
-                          onClick={() => onOpenNote(contact)}
-                          title="Open note / gift ideas"
-                          className="text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 p-1.5 rounded-lg transition"
-                        >
-                          Notes
-                        </button>
                         <button
                           onClick={() => onToggleGiftDone(contact, true)}
                           disabled={isUpdating}
@@ -190,6 +178,22 @@ export const Highlights: React.FC<HighlightsProps> = ({
                         </button>
                       </div>
                     </div>
+                    <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between">
+                      <div className="min-w-0 flex-1">
+                        {contact.note && (
+                          <p className="text-xs text-slate-500 truncate mt-0.5 italic truncate">
+                            💡 {contact.note}...
+                          </p>
+                        )}
+                      </div>
+                      <button
+                          onClick={() => onOpenNote(contact)}
+                          title="Open note / gift ideas"
+                          className="text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 p-1.5 rounded-lg transition"
+                        >
+                          Notes
+                        </button>
+                      </div>
                   </div>
                 );
               })}

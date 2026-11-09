@@ -1,4 +1,5 @@
 import { SheetConfig } from '../types';
+import { waitForGapi } from './googleAuth';
 
 export const SHEET_ID_KEY = 'birthday_manager_sheet_id';
 export const SHEET_NAME_KEY = 'birthday_manager_sheet_name';
@@ -8,18 +9,15 @@ let pickerLoaded = false;
 /**
  * Loads the Google Picker library through gapi.load('picker').
  */
-export function loadPickerLibrary(): Promise<void> {
+export async function loadPickerLibrary(): Promise<void> {
   if (pickerLoaded && window.google?.picker) {
-    return Promise.resolve();
+    return;
   }
 
-  return new Promise((resolve, reject) => {
-    if (!window.gapi) {
-      reject(new Error('Google API client (gapi) script is not available.'));
-      return;
-    }
+  const gapiInstance = await waitForGapi();
 
-    window.gapi.load('picker', () => {
+  return new Promise((resolve) => {
+    gapiInstance.load('picker', () => {
       pickerLoaded = true;
       resolve();
     });

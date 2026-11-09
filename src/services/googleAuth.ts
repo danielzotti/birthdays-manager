@@ -54,6 +54,60 @@ export function clearStoredAuth(): void {
 }
 
 /**
+ * Waits for `window.gapi` to be defined by the script loaded in index.html.
+ */
+export function waitForGapi(timeoutMs = 10000): Promise<typeof gapi> {
+  return new Promise((resolve, reject) => {
+    if (typeof window !== 'undefined' && window.gapi) {
+      resolve(window.gapi);
+      return;
+    }
+
+    const startTime = Date.now();
+    const interval = setInterval(() => {
+      if (typeof window !== 'undefined' && window.gapi) {
+        clearInterval(interval);
+        resolve(window.gapi);
+      } else if (Date.now() - startTime > timeoutMs) {
+        clearInterval(interval);
+        reject(
+          new Error(
+            'Google API Client (gapi) script timed out while loading. Please check your network connection.'
+          )
+        );
+      }
+    }, 50);
+  });
+}
+
+/**
+ * Waits for `window.google?.accounts?.oauth2` to be defined by the GIS script.
+ */
+export function waitForGis(timeoutMs = 10000): Promise<typeof google.accounts.oauth2> {
+  return new Promise((resolve, reject) => {
+    if (typeof window !== 'undefined' && window.google?.accounts?.oauth2) {
+      resolve(window.google.accounts.oauth2);
+      return;
+    }
+
+    const startTime = Date.now();
+    const interval = setInterval(() => {
+      if (typeof window !== 'undefined' && window.google?.accounts?.oauth2) {
+        clearInterval(interval);
+        resolve(window.google.accounts.oauth2);
+      } else if (Date.now() - startTime > timeoutMs) {
+        clearInterval(interval);
+        reject(
+          new Error(
+            'Google Identity Services (GIS) script timed out while loading. Please check your network connection.'
+          )
+        );
+      }
+    }, 50);
+  });
+}
+
+/**
  * Initializes the Google API client library with API key and Sheets discovery doc.
  */
 export async function initializeGapi(apiKey: string): Promise<void> {
@@ -61,15 +115,12 @@ export async function initializeGapi(apiKey: string): Promise<void> {
     return;
   }
 
-  return new Promise((resolve, reject) => {
-    if (!window.gapi) {
-      reject(new Error('Google API Client (gapi) script not loaded yet.'));
-      return;
-    }
+  const gapiInstance = await waitForGapi();
 
-    window.gapi.load('client', async () => {
+  return new Promise((resolve, reject) => {
+    gapiInstance.load('client', async () => {
       try {
-        await window.gapi.client.init({
+        await gapiInstance.client.init({
           apiKey,
           discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
         });
@@ -78,7 +129,7 @@ export async function initializeGapi(apiKey: string): Promise<void> {
         const storedToken = getStoredAccessToken();
         if (storedToken) {
           currentAccessToken = storedToken;
-          window.gapi.client.setToken({ access_token: storedToken });
+          gapiInstance.client.setToken({ access_token: storedToken });
         }
 
         resolve();
@@ -92,16 +143,14 @@ export async function initializeGapi(apiKey: string): Promise<void> {
 /**
  * Initializes the Google Identity Services (GIS) Token Client.
  */
-export function initializeGisTokenClient(
+export async function initializeGisTokenClient(
   clientId: string,
   onTokenReceived: (token: string) => void,
   onError?: (err: unknown) => void
-): google.accounts.oauth2.TokenClient {
-  if (!window.google?.accounts?.oauth2) {
-    throw new Error('Google Identity Services (google.accounts.oauth2) script not loaded yet.');
-  }
+): Promise<google.accounts.oauth2.TokenClient> {
+  const gis = await waitForGis();
 
-  tokenClient = window.google.accounts.oauth2.initTokenClient({
+  tokenClient = gis.initTokenClient({
     client_id: clientId,
     scope: OAUTH_SCOPES,
     callback: (response: google.accounts.oauth2.TokenResponse) => {

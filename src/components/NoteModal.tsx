@@ -63,10 +63,7 @@ export const NoteModal: React.FC<NoteModalProps> = ({
         <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-slate-50 to-indigo-50/30">
           <div>
             <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <span>Gift Ideas & Notes</span>
-              <span className="text-xs font-normal text-indigo-700 bg-indigo-100 px-2.5 py-0.5 rounded-full">
-                Markdown
-              </span>
+              <span>Notes</span>
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               For <strong className="text-slate-800">{contact.fullName}</strong> • Birthday: {contact.formattedDate}
@@ -184,7 +181,7 @@ Size: L, prefers dark colors"
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
           <span className="text-xs text-slate-400">
             Row {contact.rowIndex} in Google Sheets (Col H)
           </span>

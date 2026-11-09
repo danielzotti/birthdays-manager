@@ -28,7 +28,7 @@ import {
   updateNote
 } from './services/sheetsService';
 import { filterAndSortContacts } from './services/birthdayUtils';
-import { AlertCircle, RefreshCw, Sparkles } from 'lucide-react';
+import { AlertCircle, RefreshCw } from 'lucide-react';
 
 export const App: React.FC = () => {
   // Config credentials from ENV or local storage fallback
@@ -139,7 +139,7 @@ export const App: React.FC = () => {
 
       await initializeGapi(apiKey);
 
-      initializeGisTokenClient(
+      await initializeGisTokenClient(
         clientId,
         async (token) => {
           setIsAuthenticated(true);

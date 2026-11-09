@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { SheetConfig, UserProfile } from '../types';
-import { Cake, FileSpreadsheet, RefreshCw, LogOut, FolderSync, ExternalLink } from 'lucide-react';
+import { Cake, FileSpreadsheet, RefreshCw, LogOut, FolderSync } from 'lucide-react';
 
 interface HeaderProps {
   sheetConfig: SheetConfig | null;
@@ -19,6 +19,12 @@ export const Header: React.FC<HeaderProps> = ({
   onChangeSheet,
   onLogout
 }) => {
+  const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [userProfile?.picture]);
+
   return (
     <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -78,9 +84,11 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* User Profile & Logout */}
             <div className="flex items-center pl-2 ml-1 border-l border-slate-200 gap-2">
-              {userProfile?.picture ? (
+              {userProfile?.picture && !imgError ? (
                 <img
                   src={userProfile.picture}
+                  referrerPolicy="no-referrer"
+                  onError={() => setImgError(true)}
                   alt={userProfile.name || userProfile.email}
                   className="w-7 h-7 rounded-full border border-slate-200 shadow-inner"
                   title={userProfile.email}
