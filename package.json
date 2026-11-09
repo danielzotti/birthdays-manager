@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "gas:login": "clasp login",
+    "gas:push": "clasp push",
+    "gas:open": "clasp open"
   },
   "dependencies": {
     "lucide-react": "^1.16.0",
