@@ -51,45 +51,111 @@ The database is a Google Spreadsheet containing a sheet named `Birthdays`. Row 1
 
 ---
 
-## 3. Google Cloud Console Setup
+## 3. Step-by-Step Initial Setup Guide (Spreadsheet & Credentials)
 
-To connect the frontend SPA and the Apps Script to Google APIs, configure a Google Cloud project:
+Follow this end-to-end guide to set up your Google Spreadsheet database and generate the required credentials for `.env`.
 
-### Step 1: Create or Select a Project
-1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
-2. Create a new project (e.g. `birthday-manager-app`).
+### Part A: Create the Google Spreadsheet Database
 
-### Step 2: Enable Required APIs
-Navigate to **APIs & Services > Library** and enable:
-- **Google Sheets API**
-- **Google Picker API**
-- **Google People API**
-- **Google Drive API**
+1. Open [Google Drive](https://drive.google.com/).
+2. Click **New (+)** > **Google Sheets** > **Blank spreadsheet**.
+3. Name the spreadsheet at the top left (e.g. **`Birthday Database`**).
+4. At the bottom tab bar, double-click the default sheet tab (*Sheet1*) and rename it to **`Birthdays`**.
+5. *(Optional)* Add the header row in Row 1 (columns A through H):
+   `id`, `first_name`, `last_name`, `birth_date`, `email`, `gift`, `gift_done`, `note`.
+   *(If left empty, the Google Apps Script will automatically populate the headers on its first run).*
+6. **Get your Apps Script ID**:
+   - In the spreadsheet menu, click **Extensions > Apps Script**. This automatically creates an Apps Script project bound to this specific spreadsheet.
+   - In the Apps Script editor that opens, click the **Gear icon (Project Settings)** on the left sidebar.
+   - Find the section **IDs** and copy the **Script ID** (a long alphanumeric string).
+   - In your local project repository, create `gas/.clasp.json` from the example template:
+     ```bash
+     cp gas/.clasp.json.example gas/.clasp.json
+     ```
+   - Open `gas/.clasp.json` and paste your copied ID into `scriptId`:
+     ```json
+     {
+       "scriptId": "YOUR_COPIED_SCRIPT_ID_HERE",
+       "rootDir": "./gas"
+     }
+     ```
 
-### Step 3: Configure the OAuth Consent Screen
+---
+
+### Part B: Obtain the `.env` Credentials in Google Cloud Console
+
+Your `.env` file requires two values:
+```env
+VITE_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+VITE_GOOGLE_API_KEY=your-api-key
+```
+
+Follow these click-by-click steps in the [Google Cloud Console](https://console.cloud.google.com/):
+
+#### Step 1: Create a Google Cloud Project
+1. Go to [Google Cloud Console](https://console.cloud.google.com/).
+2. In the top navigation bar, click the **Project Dropdown** and select **New Project**.
+3. Enter a Project Name (e.g. **`Birthday Manager`**) and click **Create**.
+4. Once created, make sure the project is selected in the top bar.
+
+#### Step 2: Enable the Required APIs
+1. Open the navigation menu and go to **APIs & Services > Library**.
+2. Search for and click **Enable** for each of the following 4 APIs:
+   - **Google Sheets API** (reads and writes rows in your spreadsheet)
+   - **Google Picker API** (displays the file selector to choose the spreadsheet)
+   - **Google People API** (imports contacts with birthdays)
+   - **Google Drive API** (grants access to file selection)
+
+#### Step 3: Configure the OAuth Consent Screen
 1. Go to **APIs & Services > OAuth consent screen**.
-2. Select **External** (or Internal for Google Workspace accounts).
-3. Fill in App Name, Support Email, and Developer Contact Email.
-4. Under **Scopes**, add:
-   - `https://www.googleapis.com/auth/spreadsheets`
-   - `https://www.googleapis.com/auth/drive.file`
-   - `https://www.googleapis.com/auth/userinfo.profile`
-   - `https://www.googleapis.com/auth/userinfo.email`
-5. Under **Test Users**, add your personal Google account email address.
+2. Select **External** (accessible to any Google account) and click **Create**.
+3. In **App Information**:
+   - **App name**: `Birthday Manager`
+   - **User support email**: your Google account email
+   - **Developer contact information**: your Google account email
+4. Click **Save and Continue**.
+5. In **Scopes**:
+   - Click **Add or Remove Scopes**.
+   - Select the following scopes:
+     - `https://www.googleapis.com/auth/spreadsheets`
+     - `https://www.googleapis.com/auth/drive.file`
+     - `.../auth/userinfo.email`
+     - `.../auth/userinfo.profile`
+   - Click **Update** and then **Save and Continue**.
+6. In **Test Users**:
+   - Click **+ Add Users** and type your personal Google account email address.
+   - Click **Add**, then click **Save and Continue**.
+   *(While your app is in testing mode, only authorized test users can sign in).*
+7. Review the summary and click **Back to Dashboard**.
 
-### Step 4: Create Credentials
-1. **OAuth 2.0 Client ID**:
-   - Go to **APIs & Services > Credentials > Create Credentials > OAuth client ID**.
-   - Application Type: **Web application**.
-   - **Authorized JavaScript origins**:
-     - `http://localhost:3000`
-     - `http://localhost:5173`
-     - `https://<YOUR-GITHUB-USERNAME>.github.io`
-   - Copy the generated **Client ID**.
-2. **API Key**:
-   - Go to **Create Credentials > API Key**.
-   - (Recommended) Restrict the key to **Google Sheets API** and **Google Picker API**.
-   - Copy the generated **API Key**.
+#### Step 4: Generate the OAuth Client ID (`VITE_GOOGLE_CLIENT_ID`)
+1. Go to **APIs & Services > Credentials**.
+2. Click **+ Create Credentials** at the top and select **OAuth client ID**.
+3. Choose **Application type**: **Web application**.
+4. Set **Name**: `Birthday Manager Web Client`.
+5. Under **Authorized JavaScript origins**, click **+ Add URI** and add:
+   - `http://localhost:3000` (for local development)
+   - `http://localhost:5173` (standard Vite default port)
+   - `https://<YOUR-GITHUB-USERNAME>.github.io` (for GitHub Pages hosting)
+6. Leave **Authorized redirect URIs** empty (the app uses the client-side popup Token Model).
+7. Click **Create**.
+8. A modal dialog will present your **Client ID** (formatted like `xxxxxxxxxxxx-xxxxxxxxxxxxxxxx.apps.googleusercontent.com`).
+9. Copy this value and paste it into `.env` as:
+   ```env
+   VITE_GOOGLE_CLIENT_ID=xxxxxxxxxxxx-xxxxxxxxxxxxxxxx.apps.googleusercontent.com
+   ```
+
+#### Step 5: Generate the API Key (`VITE_GOOGLE_API_KEY`)
+1. On the same **Credentials** page, click **+ Create Credentials** > **API key**.
+2. A modal will display your new API key (starts with `AIzaSy...`).
+3. Copy this key and paste it into `.env` as:
+   ```env
+   VITE_GOOGLE_API_KEY=AIzaSy...
+   ```
+4. *(Recommended Security Step)* Click **Edit API key** on the newly created key:
+   - Under **API restrictions**, select **Restrict key**.
+   - Check **Google Sheets API** and **Google Picker API**.
+   - Click **Save**.
 
 ---
 
