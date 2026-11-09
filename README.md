@@ -270,7 +270,7 @@ An automated GitHub Actions workflow is pre-configured in `.github/workflows/dep
    - `VITE_GOOGLE_API_KEY`: Your Google Cloud API Key.
 4. Go to **Settings > Pages** and set:
    - **Build and deployment > Source**: **GitHub Actions**.
-5. Every push to the `main` branch will automatically build and deploy the SPA to:
+5. Every push to the `master` branch will automatically build and deploy the SPA to:
    `https://<YOUR-USERNAME>.github.io/birthdays-manager/`
 
 ---
