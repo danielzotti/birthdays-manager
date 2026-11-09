@@ -30,37 +30,29 @@ export const Header: React.FC<HeaderProps> = ({
               <Cake className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="font-bold text-lg text-slate-900 tracking-tight leading-none flex items-center gap-2">
+              <h1 className="hidden sm:block font-bold text-lg text-slate-900 tracking-tight leading-none flex items-center gap-2">
                 Birthday Manager
-                <span className="text-[10px] font-semibold uppercase tracking-wider bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full border border-indigo-100 hidden sm:inline-block">
-                  SPA
-                </span>
               </h1>
-              <p className="text-xs text-slate-500 mt-0.5">Google Sheets & Contacts Sync</p>
             </div>
           </div>
 
-          {/* Center: Current Sheet Info (if loaded) */}
-          {sheetConfig && (
-            <div className="hidden md:flex items-center gap-2 bg-slate-50 border border-slate-200/80 rounded-lg px-3 py-1.5 text-xs text-slate-600 max-w-sm truncate">
-              <FileSpreadsheet className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span className="truncate font-medium text-slate-700" title={sheetConfig.name}>
-                {sheetConfig.name}
-              </span>
+
+          {/* Right Action Buttons */}
+          <div className="flex items-center gap-2">
+             {sheetConfig && (
               <a
                 href={`https://docs.google.com/spreadsheets/d/${sheetConfig.id}/edit`}
                 target="_blank"
                 rel="noreferrer"
                 title="Open in Google Sheets"
-                className="text-slate-400 hover:text-indigo-600 transition-colors ml-1 p-0.5 rounded hover:bg-slate-200/50"
+                className="text-slate-400 hover:text-indigo-600 transition-colors ml-1 p-0.5 rounded hover:bg-slate-200/50 flex items-center gap-2 bg-slate-50 border border-slate-200/80 rounded-lg px-3 py-1.5 text-xs text-slate-600 max-w-sm truncate"
               >
-                <ExternalLink className="w-3.5 h-3.5" />
+                <FileSpreadsheet className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span className="hidden lg:block truncate font-medium text-slate-700" title={sheetConfig.name}>
+                  {sheetConfig.name}
+                </span>
               </a>
-            </div>
           )}
-
-          {/* Right Action Buttons */}
-          <div className="flex items-center gap-2">
             {sheetConfig && (
               <>
                 <button
@@ -70,7 +62,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-sm transition-all disabled:opacity-50"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-indigo-600' : ''}`} />
-                  <span className="hidden sm:inline">Refresh</span>
+                  <span className="hidden md:inline">Refresh</span>
                 </button>
 
                 <button
@@ -79,7 +71,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-sm transition-all"
                 >
                   <FolderSync className="w-3.5 h-3.5 text-slate-500" />
-                  <span className="hidden sm:inline">Change File</span>
+                  <span className="hidden md:inline">Change File</span>
                 </button>
               </>
             )}

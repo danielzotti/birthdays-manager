@@ -417,14 +417,7 @@ export const App: React.FC = () => {
       {/* Footer */}
       <footer className="mt-12 py-6 border-t border-slate-200/80 bg-white/50 text-center text-xs text-slate-400">
         <p className="flex items-center justify-center gap-1.5">
-          <span>Birthday Manager</span>
-          <span>•</span>
-          <span>Single Page Application & Google Apps Script</span>
-          <span>•</span>
-          <span className="flex items-center gap-1 text-slate-500">
-            <Sparkles className="w-3 h-3 text-amber-500" />
-            Milestones & Gifts
-          </span>
+          <span>Birthday Manager by Daniel</span>
         </p>
       </footer>
 

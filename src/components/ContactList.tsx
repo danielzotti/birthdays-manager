@@ -38,7 +38,7 @@ export const ContactList: React.FC<ContactListProps> = ({
     <div className="space-y-6">
       
       {/* Search and Filters Header */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs space-y-4 sticky top-20 z-10">
         
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           
